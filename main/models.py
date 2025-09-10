@@ -12,5 +12,5 @@ class Product(models.Model):
     price = models.IntegerField()
     description = models.TextField()
     thumbnail = models.URLField()
-    category = models.CharField()
+    category = models.CharField(max_length=30)
     is_featured = models.BooleanField()
