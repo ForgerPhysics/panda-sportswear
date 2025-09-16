@@ -1,3 +1,5 @@
+{% extends 'base.html' %} {% block content %}
+
 <h5>Nama Aplikasi:</h5>
 <p>{{ namaaplikasi }}</p>
 <h5>Nama:</h5>
@@ -5,3 +7,39 @@
 <p></p>
 <h5>Kelas:</h5>
 <p>{{ kelas }}</p>
+
+<a href="{% url 'main:create_product' %}">
+  <button>+ Add</button>
+</a>
+
+<hr />
+
+{% if not product_list %}
+<p>Belum ada data Produk pada toko Panda-Sportswear.</p>
+{% else %} {% for product in product_list %}
+<div>
+  <h2>
+    <a href="{% url 'main:show_product' product.id %}">{{ product.nama }}</a>
+  </h2>
+
+  <p>
+    <b>{{ product.get_category_display }}</b>
+    | <i>{{product.created_at|date:"d M Y H:i" }}</i> | Views: {{ product.product_views }}
+  </p>
+
+  {% if product.thumbnail %}
+  <img src="{{ product.thumbnail }}" alt="thumbnail" width="150" height="100" />
+  <br />
+  {% endif %}
+
+  <p>{{ product.description|truncatewords:25 }}...</p>
+
+  <p>
+    <a href="{% url 'main:show_product' product.id %}"
+      ><button>Detail</button></a
+    >
+  </p>
+</div>
+
+<hr />
+{% endfor %} {% endif %} {% endblock content %}
