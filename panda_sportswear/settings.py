@@ -32,7 +32,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", "ryan-gibran-pandasportswear.pbp.cs.ui.ac.id"]
 
-
+CSRF_TRUSTED_ORIGINS = [
+    "<url-deployment-pws-kamu>"
+]
 # Application definition
 
 INSTALLED_APPS = [
