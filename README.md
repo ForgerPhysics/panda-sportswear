@@ -70,3 +70,58 @@ Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/
 6. Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
 
    Tutorial 1 dilakukan secara online. Saya merasa cukup menyenangkan menjalani tutorial online seperti ini, karena tidak perlu untuk mengerjakan di lab dengan kondisi suasana cukup berisik (yang adalah wajar karena banyak juga yang masih bingung dan mengalami error). Dengan tutorial online, saya bisa berkomunikasi dengan asdos secara cepat melalui discord jika dibutuhkan tanpa harus "menunggu" asdos datang ke meja seperti ketika tutorial offline. Pada tutorial 1, saya merasa asdos telah melakukan pekerjaannya dengan cukup baik, karna saya melihat asdos stay di room discord dan menyampaikan bahwa asdos bersedia dihubungi pada sesi tutorial untuk tanya jawab. Semoga asdos bisa tetap semangat dan sabar membimbing mahasiswa pbp tahun ajaran ini.
+
+<br></br>
+Tugas 3: Implementasi Form dan Data Delivery pada Django  
+Nama : Ryan Gibran Purwacakra Sihaloho  
+Kelas : PBP - C  
+NPM : 2406419833  
+Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/  
+  
+1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?  
+   Data delivery adalah proses pengiriman data dari satu sistem (source) ke sistem lain (target) secara efisien dan aman. Dalam platform, proses ini penting karena platform tidak dapat berfungsi optimal tanpa data yang akurat dan tepat waktu.Beberapa alasan kita memerlukan data delivery adalah:  
+   1) Memastikan Fungsionalitas Inti Platform  
+   Platform seringkali harus terhubung ke sistem lawas yang didevelop sudah cukup lama. Data delivery membantu platform mendapatkan data ini agar bisa ditampilkan ke user.  
+   Contoh:  
+   mobile banking perlu terima pengiriman data saldo nasabah, riwayat transaksi, dan informasi pinjaman dari sistem perbankan inti (core banking system) untuk menampilkan informasi tersebut dengan tepat kepada user
+   2) Mendukung Skalabilitas dan Pertumbuhan  
+   Semakin lama proses bisnis berlangsung dan berdiri, volume data yang disimpan meningkat drastis. Arsitektur data delivery dirancang untuk menangani peningkatan beban kerja dan memastikan platform responsif meski jumlah pengguna atau transaksinya bertambah
+   3) Memungkinkan Pengambilan Keputusan Real-Time  
+   Data delivery membuat data mengalir secara real-time atau mendekati real-time ke dasbor analitik atau sistem business intelligence (BI)
+   Contoh:  
+   Platform logistik butuh data lokasi GPS dari setiap kendaraan armana secara live untuk mengoptimalkan rute pengiriman dan memberi estimasi waktu kedatangan yang akurat kepada customer. 
+    
+   Referensi:
+   Designing Data-Intensive Applications" oleh Martin Kleppmann
+   https://www.fanruan.com/en/glossary/big-data/data-delivery
+   https://medium.com/orchestras-data-release-pipeline-blog/principles-of-effective-data-delivery-how-ci-cd-should-look-for-data-teams-miniseries-part-3-396deb5af97a 
+2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?  
+   Untuk konsep pengembangan web, json lebih baik dalam hal ini. Beberapa alasannya adalah:  
+   1) Dibanding xml, json lebih ringkas merepresentasikan data yang sama
+   2) Struktu rdata lebih sesuai dengan API. API digunakan untuk mengirim dan menerima data terstruktur seperti informasi pengguna, produk, atau status. Struktur pasangan key-value dan array pada JSON cocok untuk merepresentasikan data
+   3) Mudah dibaca dan ditulis
+   4) Cocok dengan penggunaan javascript  
+   JSON adalah notasi objek JavaScript. Ini membua json mudah digunakan dalam pengembangan web, di mana JavaScript adalah bahasa yang sering dipakai. Mengubah data JSON menjadi objek JavaScript (dan sebaliknya) dapat dilakukan dengan satu command baris kode(cari kodenya), tanpa memerlukan library eksternal.
+3. Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?  
+Metode is_valid memeriksa kesesuaian data, membersihkan, dan menyiapkan data sebelum dikelola oleh developer. 
+Kita membutuhkan method tersebut karena:  
+   1) Mencegah Data yang Tidak Valid .  
+   Tanpa validasi kemanan, bisa saja aplikasi menerima sql injection. Tanpa intergari, bisa saja aplikasi menerima data yang tidak sesuai (seperti umur disimpan dalam string, nomor telepon terdapat abjad, dsb) yang menyebabkan database rusak
+   2) Menyediakan data yang siap dipakai.  
+   Sebelum menggunakan method, Data dari form (request.POST) masih berupa string mentah. Sesudah menggunakan method, Data di form.cleaned_data (dictionary Python yang berisi data yang sudah divalidasi dan dikonversi ke tipe data yang sesuai) sudah aman dan dalam format Python yang sesuai, bisa untuk disimpan ke database atau diolah lagi.
+4. Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut dapat dimanfaatkan oleh penyerang?  
+   Kita butuh csrf_token di form Django untuk melindungi situs web dan penggunanya dari serangan Cross-Site Request Forgery (CSRF). Token ini berfungsi sebagai "tanda pengenal rahasia" yang memastikan request yang dikirim melalui form benar-benar berasal dari situs web yang dibuat, bukan dari situs lain yang berbahaya.  
+   Jika kita tidak menyertakan {% csrf_token %} pada form, situs akan menjadi rentan terhadap serangan CSRF. Ini berarti seorang penyerang bisa "menipu" browser user yang sedang login di situs kita untuk mengirim request palsu tanpa sepengetahuan user.
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+   1)  Menambahkan 4 fungsi views baru untuk melihat produk yang sudah ditambahkan dalam format XML, JSON, XML by ID, dan JSON by ID. Kemudian Membuat routing masing masing URL keempat fungsi views.
+   2)  Membuat halaman untuk menampilkan data objek model yang memiliki tombol "Add" yang akan mengarah ke halaman form, dan tombol "Detail" pada setiap data objek model yang akan menampilkan halaman detail objek pada main/templates/main.html
+   3)  Membuat halaman form untuk menambahkan objek model pada app sebelumnya pada berkas forms.py. Jenis data yang ingin diminta dari user akan diletakkan pada list field.
+   4)  Membuat halaman yang menampilkan detail dari setiap data objek model dengan membuat berkas create_product.html dan product_detail.html
+6. Apakah ada feedback untuk asdos di tutorial 2 yang sudah kalian kerjakan?  
+Tidak ada
+7. Mengakses keempat URL di poin 2 menggunakan Postman, membuat screenshot dari hasil akses URL pada Postman, dan menambahkannya ke dalam README.md.
+![POSTMAN_XML](<assets/postman_xml.png>) 
+![POSTMAN_JSON](<assets/postman_json.png>) 
+![POSTMAN_XML_ID](<assets/postman_xml_id.png>) 
+![POSTMAN_JSON_ID](<assets/postman_json_id.png>)
+![weblocalhost](<assets/web_localhost.png>)
