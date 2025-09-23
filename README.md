@@ -219,4 +219,23 @@ Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/
    -untuk menampilkan username, berkas main.html ditambahkan line yang mengakses atribut username yang sedang login dari database, dengan template {{ user.username }}  
    -untuk menerapkan cookies, fungsi form.is_valid() pada views.py diubah agar menyimpan waktu saat user login sebagai cookie. Tentunya digunakan beberapa library dari Django untuk melakukan hal ini. Dilakukan juga perubahan pada fungi show_main pada bagian context dengan mendefinisikan atribut 'last_login'.Setelah itu, untuk menampilkan data last_login di halaman website, pada berkas main.html ditambahkan template {{ last_login }}.
 
+Berikut adalah dua buah akun yang diregistrasi beserta produk yang dibuat:  
+
+username: user1  
+password: 12qwerty345  
+Produk:  
+- F50 Messi League Firm/Multi-Ground Boots
+- Chelsea F.C. 2025/26 Match Home
+- SAUDI PRO LEAGUE BALL  
+
+username: user2  
+password: 12qwerty345  
+produk:  
+- Real Madrid Terrace Icons Track Top
+- Samba Indoor Football Boots
+- Copa Pure 3 League Firm/Multi-Ground Boots
+
+
+
+
 
