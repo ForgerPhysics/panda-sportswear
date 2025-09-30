@@ -201,7 +201,7 @@ Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/
    Django memiliki sistem perlindungan CSRF yang sangat kuat dan aktif secara default.Berikut adalah cara kerjanya:  
    CSRF Middleware: Django memiliki CsrfViewMiddleware yang aktif secara otomatis.  
    CSRF Token: Untuk setiap session user, Django menghasilkan sebuah token rahasia (CSRF token) yang hanya diketahui oleh server dan klien tersebut.  
-   Integrasi Template: Saat kita (pengembang) merender sebuah formulir menggunakan metode POST, developer wajib menyertakan tag template {% csrf_token %}. Tag ini akan membuat input tersembunyi < input type="hidden"> yang berisi CSRF token tadi.  
+   Integrasi Template: Saat kita (pengembang) merender sebuah formulir menggunakan metode POST, developer wajib menyertakan tag template {% csrf_token %}. Tag ini akan membuat input tersembunyi <br input type="hidden"> yang berisi CSRF token tadi.  
    Validasi: Ketika formulir dikirim, CsrfViewMiddleware akan membandingkan CSRF token yang dikirim dari formulir dengan token yang seharusnya ada di session user. Jika keduanya tidak cocok, permintaan akan ditolak dengan error 403 (Forbidden).
 5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).  
    Mengimplementasikan fungsi registrasi, login, dan logout untuk memungkinkan pengguna mengakses aplikasi sebelumnya sesuai dengan status login/logoutnya  
@@ -235,7 +235,88 @@ produk:
 - Samba Indoor Football Boots
 - Copa Pure 3 League Firm/Multi-Ground Boots
 
+<br></br>
+Tugas 5: Desain Web menggunakan HTML, CSS dan Framework CSS
+Nama : Ryan Gibran Purwacakra Sihaloho  
+Kelas : PBP - C  
+NPM : 2406419833  
+Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/  
+  
+1. Jika terdapat beberapa CSS selector untuk suatu elemen HTML, jelaskan urutan prioritas pengambilan CSS selector tersebut!  
+CSS selector adalah pola yang developer gunakan untuk memilih elemen HTML yang ingin kita stylong. Urutan pengambilannya ditentukan oleh CSS Specificity. Berikut adalah urutan prioritasnya, dimulai dari yang paling diprioritaskan hingga paling tidak diprioritaskan:  
+   1) selector apapun yang diakhiri dengan "!important"
+   2) Inline Style, merupakan style yang ditulis langsung didalam atribut "style" pada page html
+   3) Selector yang menggunakan ID Selector(#)
+   4) Class Selector(.), Attribute Selector([]), dan Pseudo-class(:)
+   5) Element selector(p) dan Pseudo-element(::)    
+
+   referensi: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascade/Specificity
 
 
+2. Mengapa responsive design menjadi konsep yang penting dalam pengembangan aplikasi web? Berikan contoh aplikasi yang sudah dan belum menerapkan responsive design, serta jelaskan mengapa!  
+User mengakses web bisa dari beberapa kemungkinan device. Tentunya tiap device memiliki ukuran layar yang berbeda beda. Agar tampilan web bisa terlihat jelas oleh user, diperlukan responsive design yang dapat beradaptasi mengikuti ukuran layar device user.  
+Contoh aplikasi web yang sudah menerapkan responsive design: instagram.
+terlihat sekali perbedaannya ketika web tersebut dibuka dengan PC dan hanphone, ukuran tombol dan letaknya optimal untuk tiap device.  
+Contoh aplikasi web yang belum menerapkan responsive design: https://www.berkshirehathaway.com/  ketika diakses dengan ponsel, tampilan tulisan sangat kecil, banyak dan tidak nyaman dibaca.  
+3. Jelaskan perbedaan antara margin, border, dan padding, serta cara untuk mengimplementasikan ketiga hal tersebut!  
+Secara sederhana: luar | margin | border | padding | dalam.  
+Padding adalah space kosong diantara konten (dalam) dan border  
+Border adalah garis yang mengelilingi padding
+Margin adalah space kosong transparan diluar border
+Untuk mengimplementasi css, bisa dengan membuat kelas dan mendeklarasikan atributnya. Contohnya sebagai berikut.  
+   ```
+   HTML  
+   <div class="kotak-margin-border-padding">
+     Ini adalah konten, posisinya didalam kotak
+   </div>
+   ```
+   ```
+   CSS
+   .kotak-margin-border-padding {
+     /* Menetapkan padding 20px untuk semua sisi (atas,kanan, bawah, kiri) */
+     padding: 20px;
+
+     /* Menetapkan border dengan tebal 5px, stylea solid (garis lurus), dan warna merah */
+     border: 5px solid red;
+
+     
+     /* menetapkan margin 30px untuk semua sisi */
+     margin: 30px;
+     
+     /* Properti tambahan */
+     background-color: #f0f0f0;
+     width: 300px;
+   }
+   ```  
+
+4. Jelaskan konsep flex box dan grid layout beserta kegunaannya!  
+   Flexbox: model layout yang dimana item alam sebuah kontainer diatur secara fleksibel di sepanjang satu sumbu utama yang dipilih. Flexbox mengatur konten dalam komponen. Biasanya digunakan untuk membuat navbar, mengatur layout komponen, menengahkan elemen.  
+   Gridlayout: sistem layout berbasis kisi-kisi dua dimensi. Gridlayout mengatur komponen pada page. Biasanya digunakan untuk mendesain main page, galeri, dan desain yang letaknya sesuka sukanya developer.
+5. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)!  
+   1) mendefinisikan fungsi edit_product dan delete_product pada views.py, melakukan routing url, dan membuat page html untuk kedua fungsi.
+   2) melakukan konfigursi static files dan menulis script tailwind pafa file base.html.
+   3) Membuat page navbar html
+   4) Melakukan styling css pada setiap dile html di direktori main/templates
+   5) Menambahkan gambar no-product.png di direktori static/image untuk ditampilkan di main.html ketika belum ada produk yang dibuat.
+   6) Supaya navbar responsive:  
+      a. menu navigasi desktop mobile disembunyikan
+      b. Tombol "burger" ditampilkan pada mobile device dengan kode  
+      ```
+      <div class="md:hidden flex items-center">
+          <button class="mobile-menu-button ...">
+              </button>
+      </div>
+      ``` 
+      c. Menu dropdown ditampilkan saat burger di klik  
+      ```
+      <script>
+          const btn = document.querySelector("button.mobile-menu-button");
+          const menu = document.querySelector(".mobile-menu");
+
+          btn.addEventListener("click", () => {
+              menu.classList.toggle("hidden");
+          });
+      </script>
+      ```
 
 
