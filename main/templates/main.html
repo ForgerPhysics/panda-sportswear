@@ -1,101 +1,260 @@
-{% extends 'base.html' %} 
-{% block content %}
+{% extends 'base.html' %}
 {% load static %}
+{% block content %}
 {% include 'navbar.html' %}
 
 <div class="bg-gray-100 min-h-screen py-8">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        <header class="bg-white rounded-xl shadow-md p-6 mb-8">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Halo, {{ user.username }}!</h1>
-                    <div class="mt-2 text-sm text-gray-600 space-y-1">
-                        <p><span class="font-semibold text-gray-700">Nama Aplikasi:</span> {{ namaaplikasi }}</p>
-                        <p><span class="font-semibold text-gray-700">Nama:</span> {{ nama }}</p>
-                        <p><span class="font-semibold text-gray-700">Kelas:</span> {{ kelas }}</p>
-                    </div>
-                </div>
-                <div class="flex-shrink-0 flex items-center gap-3">
-                    <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
-                        Add Product
-                    </a>
-                    <a href="{% url 'main:logout' %}" class="inline-flex items-center px-4 py-2 bg-red-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-red-700 transition-colors">
-                        Logout
-                    </a>
-                </div>
-            </div>
-            <div class="border-t border-gray-200 mt-4 pt-3 text-right">
-                <p class="text-xs text-gray-500">Sesi terakhir login: {{ last_login }}</p>
-            </div>
-        </header>
-
-        <div class="flex items-center justify-center gap-4 mb-8">
-             <a href="?filter=all" class="px-5 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                All Products
-            </a>
-            <a href="?filter=my" class="px-5 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                My Products
-            </a>
-        </div>
-
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Header -->
+    <header class="bg-white rounded-xl shadow-md p-6 mb-8">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-            {% if not product_list %}
-                <div class="text-center bg-white rounded-xl shadow-md p-12">
-                  <div class="w-32 h-32 mx-auto mb-4">
-                    <img src="{% static 'image/no-product.png' %}" alt="Tidak Ada Produk" class="w-full h-full object-contain">
-                  </div>
-                    <h3 class="text-lg font-medium text-gray-800">Belum Ada Produk</h3>
-                    <p class="mt-2 text-sm text-gray-500">Belum ada data Produk pada toko ini. Silakan tambahkan produk baru!</p>
-                </div>
-            {% else %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {% for product in product_list %}
-                        <div class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
-                            {% if product.thumbnail %}
-                                <img class="h-48 w-full object-cover" src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail" />
-                            {% else %}
-                                <div class="h-48 w-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-gray-400">No Image</span>
-                                </div>
-                            {% endif %}
-                            
-                            <div class="p-6 flex flex-col flex-grow">
-                                <div class="flex items-center gap-2 mb-2">
-                                    <span class="inline-block px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">{{ product.get_category_display }}</span>
-                                    {% if product.is_featured %}
-                                        <span class="inline-block px-2 py-1 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full">PRODUK UNGGULAN</span>
-                                    {% endif %}
-                                </div>
-                                
-                                <h2 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600">
-                                    <a href="{% url 'main:show_product' product.id %}">{{ product.name }}</a>
-                                </h2>
-                                
-                                <div class="text-sm text-gray-500 mb-4">
-                                    <span>Harga: <strong>Rp{{ product.price }},-</strong></span>
-                                    <span class="mx-2">|</span>
-                                    <span>Dilihat: <strong>{{ product.product_views }}</strong> kali</span>
-                                </div>
-                                
-                                <p class="text-gray-700 text-sm flex-grow">{{ product.description|truncatewords:20 }}</p>
-                                
-                                <div class="mt-6 pt-4 border-t border-gray-200 flex items-center gap-3">
-                                    <a href="{% url 'main:show_product' product.id %}" class="flex-1 text-center px-3 py-2 bg-gray-700 text-white font-semibold text-xs rounded-md hover:bg-gray-800 transition-colors">Detail</a>
-                                    
-                                    {% if user.is_authenticated and product.user == user %}
-                                        <a href="{% url 'main:edit_product' product.pk %}" class="flex-1 text-center px-3 py-2 bg-blue-100 text-blue-700 font-semibold text-xs rounded-md hover:bg-blue-200 transition-colors">Edit</a>
-                                        <a href="{% url 'main:delete_product' product.pk %}" class="flex-1 text-center px-3 py-2 bg-red-100 text-red-700 font-semibold text-xs rounded-md hover:bg-red-200 transition-colors">Delete</a>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Halo, {{ user.username }}!</h1>
+          <div class="mt-2 text-sm text-gray-600 space-y-1">
+            <p><span class="font-semibold text-gray-700">Nama Aplikasi:</span> {{ namaaplikasi }}</p>
+            <p><span class="font-semibold text-gray-700">Nama:</span> {{ nama }}</p>
+            <p><span class="font-semibold text-gray-700">Kelas:</span> {{ kelas }}</p>
+          </div>
         </div>
+        <div class="flex-shrink-0 flex items-center gap-3">
+          <a href="{% url 'main:create_product' %}" 
+             class="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-semibold text-sm rounded-lg shadow-sm hover:bg-blue-700 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+            </svg>
+            Add Product
+          </a>
+
+          <!-- ✅ Tombol Logout dengan ID -->
+          <a 
+            href="{% url 'main:logout' %}" 
+            id="logout-btn"
+            class="text-gray-700 hover:text-blue-600 transition"
+          >
+            Logout
+          </a>
+        </div>
+      </div>
+      <div class="border-t border-gray-200 mt-4 pt-3 text-right">
+        <p class="text-xs text-gray-500">Sesi terakhir login: {{ user.last_login }}</p>
+      </div>
+    </header>
+
+    <!-- Filter Buttons -->
+    <div class="flex items-center justify-center gap-4 mb-8">
+      <button id="filter-all" class="px-5 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        All Products
+      </button>
+      <button id="filter-my" class="px-5 py-2 text-sm font-medium text-blue-700 bg-white border border-gray-300 rounded-full shadow-sm hover:bg-gray-50 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+        My Products
+      </button>
     </div>
+
+    <button id="refresh-products" 
+      class="flex items-center gap-2 px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-full shadow-sm hover:bg-green-700 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M4 4a1 1 0 011-1h10a1 1 0 011 1v4a1 1 0 11-2 0V5H6v10h3a1 1 0 110 2H5a1 1 0 01-1-1V4z" clip-rule="evenodd" />
+        <path d="M16 13a1 1 0 10-2 0 3 3 0 01-3 3H8a1 1 0 100 2h3a5 5 0 005-5z" />
+      </svg>
+      Refresh Produk
+    </button>
+
+    <!-- Product Grid -->
+    <div id="product-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+      <p id="loading-text" class="text-gray-500 text-sm col-span-full">Loading products...</p>
+    </div>
+
+    <!-- Modal Form -->
+    <div id="product-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-xl shadow-xl w-96 p-6 relative">
+        <button id="close-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800">&times;</button>
+        <h2 id="modal-title" class="text-lg font-bold mb-4">Tambah Produk</h2>
+
+        <form id="product-form" class="space-y-3">
+          <input type="text" name="name" placeholder="Nama Produk" class="w-full border rounded-md p-2" required>
+          <input type="number" name="price" placeholder="Harga" class="w-full border rounded-md p-2" required>
+          <input type="text" name="thumbnail" placeholder="URL Thumbnail" class="w-full border rounded-md p-2">
+          <textarea name="description" placeholder="Deskripsi Produk" class="w-full border rounded-md p-2"></textarea>
+          <select name="category" class="w-full border rounded-md p-2" required>
+            <option value="">Pilih Kategori</option>
+            <option value="Jersey & Apparel">Jersey & Apparel</option>
+            <option value="Sepatu Bola">Sepatu Bola</option>
+            <option value="Peralatan & Perlengkapan">Peralatan & Perlengkapan</option>
+            <option value="Aksesoris & Merchandise">Aksesoris & Merchandise</option>
+          </select>
+          <input type="number" name="stock" placeholder="Stok Produk" class="w-full border rounded-md p-2" min="0" required>
+          <button type="submit" class="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition">Simpan</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- ✅ TOAST -->
+<div id="toast" 
+     class="fixed bottom-6 right-6 hidden opacity-0 bg-green-600 text-white px-4 py-3 rounded-lg shadow-lg transition-all duration-500 ease-in-out transform translate-y-4 z-50">
+</div>
+
+<!-- ✅ JAVASCRIPT -->
+<script>
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+              cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+              break;
+          }
+      }
+  }
+  return cookieValue;
+}
+
+async function loadProducts(filter = 'all') {
+  const container = document.getElementById('product-container');
+  const loadingText = document.getElementById('loading-text');
+  if (loadingText) loadingText.textContent = 'Loading products...';
+  container.innerHTML = '';
+
+  try {
+    const response = await fetch(`/json/?filter=${filter}`);
+    const products = await response.json();
+
+    const username = "{{ user.username }}";
+    const filtered = filter === 'my' ? products.filter(p => p.user === username) : products;
+
+    if (filtered.length === 0) {
+      container.innerHTML = `
+        <div class="col-span-full bg-white rounded-xl shadow-md p-12">
+          <div class="w-32 h-32 mx-auto mb-4">
+            <img src="{% static 'image/no-product.png' %}" alt="Tidak Ada Produk" class="w-full h-full object-contain">
+          </div>
+          <h3 class="text-lg font-medium text-gray-800">Belum Ada Produk</h3>
+          <p class="mt-2 text-sm text-gray-500">Belum ada data Produk pada toko ini. Silakan tambahkan produk baru!</p>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = '';
+    filtered.forEach(product => {
+      const card = `
+        <div id="product-${product.id}" class="bg-white rounded-xl shadow-md overflow-hidden flex flex-col">
+          ${product.thumbnail
+            ? `<img class="h-48 w-full object-cover" src="${product.thumbnail}" alt="${product.name} thumbnail" />`
+            : `<div class="h-48 w-full bg-gray-200 flex items-center justify-center">
+                <span class="text-gray-400">No Image</span>
+              </div>`}
+          
+          <div class="p-6 flex flex-col flex-grow">
+            <div class="flex items-center gap-2 mb-2">
+              ${product.category ? `<span class="inline-block px-2 py-1 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full">${product.category}</span>` : ''}
+            </div>
+
+            <h2 class="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600">${product.name}</h2>
+            <div class="text-sm text-gray-500 mb-4">
+              <span>Harga: <strong>Rp ${Number(product.price).toLocaleString('id-ID')}</strong></span>
+            </div>
+
+            <p class="text-gray-700 text-sm flex-grow">${product.description || ''}</p>
+
+            <div class="mt-6 pt-4 border-t border-gray-200 flex items-center gap-3">
+              <a href="/product/${product.id}/" class="flex-1 text-center px-3 py-2 bg-gray-700 text-white font-semibold text-xs rounded-md hover:bg-gray-800 transition">Detail</a>
+              ${product.user === username
+                ? `
+                  <a href="/product/${product.id}/edit/" class="flex-1 text-center px-3 py-2 bg-blue-100 text-blue-700 font-semibold text-xs rounded-md hover:bg-blue-200">Edit</a>
+                  <button onclick='openModal(true, ${JSON.stringify(product)})' class="flex-1 text-center px-3 py-2 bg-green-100 text-green-700 font-semibold text-xs rounded-md hover:bg-green-200">Quick Edit</button>
+                  <button onclick="deleteProduct('${product.id}')" class="flex-1 text-center px-3 py-2 bg-red-100 text-red-700 font-semibold text-xs rounded-md hover:bg-red-200">Delete</button>`
+                : ''}
+            </div>
+          </div>
+        </div>`;
+      container.insertAdjacentHTML('beforeend', card);
+    });
+  } catch (error) {
+    container.innerHTML = `<p class="text-red-600 col-span-full">Gagal memuat data produk.</p>`;
+  }
+}
+
+async function deleteProduct(id) {
+  if (!confirm("Yakin ingin menghapus produk ini?")) return;
+
+  const response = await fetch(`/delete-product-ajax/${id}/`, {
+    method: "POST",
+    headers: { "X-CSRFToken": getCookie("csrftoken") },
+  });
+
+  if (response.ok) {
+    document.getElementById(`product-${id}`)?.remove();
+    showToast("Produk berhasil dihapus!", "success");
+  } else {
+    showToast("Gagal menghapus produk!", "error");
+  }
+}
+
+function openModal(isEdit = false, product = null) {
+  const modal = document.getElementById('product-modal');
+  const form = document.getElementById('product-form');
+  const title = document.getElementById('modal-title');
+
+  modal.classList.remove('hidden');
+  title.textContent = isEdit ? "Edit Produk" : "Tambah Produk";
+
+  if (isEdit && product) {
+    form.name.value = product.name;
+    form.price.value = product.price;
+    form.description.value = product.description;
+    form.thumbnail.value = product.thumbnail;
+    form.category.value = product.category;
+    form.stock.value = product.stock;
+    editingId = product.id;
+  } else {
+    form.reset();
+    editingId = null;
+  }
+}
+
+function showToast(message, type = "success") {
+  const toast = document.getElementById("toast");
+  toast.textContent = message;
+
+  toast.classList.toggle("bg-green-600", type === "success" || type === "info");
+  toast.classList.toggle("bg-red-600", type === "error");
+
+  toast.classList.remove("hidden", "opacity-0", "translate-y-4");
+  toast.classList.add("opacity-100", "translate-y-0");
+
+  setTimeout(() => {
+    toast.classList.add("opacity-0", "translate-y-4");
+    setTimeout(() => toast.classList.add("hidden"), 300);
+  }, 2500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  loadProducts();
+
+  document.getElementById('filter-all').addEventListener('click', () => loadProducts('all'));
+  document.getElementById('filter-my').addEventListener('click', () => loadProducts('my'));
+  
+  document.getElementById('refresh-products').addEventListener('click', async () => {
+    showToast("🔄 Memuat ulang produk...");
+    await loadProducts();
+    setTimeout(() => showToast("✅ Daftar produk diperbarui!"), 300);
+  });
+
+  // ✅ Toast Logout
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      showToast('👋 Logout berhasil, sampai jumpa!', 'info');
+      setTimeout(() => {
+        window.location.href = logoutBtn.href;
+      }, 1000);
+    });
+  }
+});
+</script>
 {% endblock content %}

@@ -319,4 +319,88 @@ Untuk mengimplementasi css, bisa dengan membuat kelas dan mendeklarasikan atribu
       </script>
       ```
 
+<br></br>
+Tugas 6: Javascript dan AJAX
+Nama : Ryan Gibran Purwacakra Sihaloho  
+Kelas : PBP - C  
+NPM : 2406419833  
+Link PWS: https://ryan-gibran-pandasportswear.pbp.cs.ui.ac.id/    
+
+1. Apa perbedaan antara synchronous request dan asynchronous request?  
+syncronus request memblokir proses lain hingga selesai
+asyncronus request berjalan di background tidak memblokir proses lain yang sedang berjalan  
+
+   syncronus request
+tugas-tugas dieksekusi satu per satu berurutan. Jika sebuah request dikirim (misalnya, meminta data dari server), aplikasi akan berhenti dan menunggu sampai respons diterima sebelum lanjut mengerjakan  tugas berikutnya.
+Jika proses rewuest membutuhkan waktu lama (misalnya, mengunduh file besar), seluruh interface user bisa "freeze" (tidak responsif), sehingga user experience terhadap aplikasi tersebut buruk.
+
+   asynchronus request
+Kita bisa mengirim request dan melanjutkan pekerjaan lain tanpa menunggu respons. Ketika respons sudah terkirim, ada mekanisme (seperti callback function atau promise) yang akan menangani data tersebut. Aplikasi akan tetap lancar karena tugas berat yang memakan waktu lama tidak menghentikan proses kerja tugas lainnya.  
+2. Bagaimana AJAX bekerja di Django (alur request–response)?  
+   1. Aksi User (Client-Side)
+   User melakukan aksi yang memicu sebuah event JavaScript.
+   Contoh: User klik tombol "like" pada sebuah postingan.
+
+   2. JavaScript Mengirim Request (Client-Side)
+   Event listener pada tombol "like" akan menjalankan fungsi JavaScript. Fungsi ini menggunakan Fetch API (atau XMLHttpRequest) untuk membuat permintaan HTTP asinkron ke server Django.  
+   Request ini membawa informasi:  
+   -URL: Alamat spesifik di server Django yang akan menangani permintaan ini (misalnya, /like-post/5/).  
+   -Method: Biasanya POST untuk mengubah data (seperti menambahkan suka) atau GET untuk mengambil data.  
+   -Headers: Informasi tambahan, seperti CSRF token   
+   -Body: Data yang dikirim ke server (jika ada).
+
+   3. URL Routing (Django Server-Side)
+   Rquestn dari JavaScript tiba di Django. Seperti mengurus request biasanya, Django melihat file urls.py untuk mencocokkan URL yang diminta dengan view yang sesuai.
+   Contoh: URL /like-post/5/ dicocokkan dengan pola path('like-post/<int:post_id>/', views.like_post_view). Django kemudian memanggil fungsi like_post_view dan memberikan post_id=5 sebagai argumen.
+
+   4. Views Memproses Logika (Django Server-Side)
+   Fungsi Views yang dipanggil akan melakukan logika yang diperlukan:
+   -Menerima data dari request (misalnya, post_id).  
+   -Berinteraksi dengan database (misalnya, mengambil objek Postingan, menambah jumlah suka, dan menyimpannya).  
+   -Menyiapkan data yang akan dikirim kembali sebagai respons, dan sebagainya sesuai dengan logika views yang dibuat developer.
+
+   5. Views Merreturn JsonResponse (Django Server-Side)
+   Ini adalah perbedaan AJAX dibanding request biasa. views tidak akan merender template HTML dengan render(), tetapi view akan mengembalikan objek JsonResponse. JsonResponse secara otomatis akan mengubah dictionary Python menjadi format JSON (JavaScript Object Notation), yang nantinya dibaca oleh JavaScript.
+   Contoh: return JsonResponse({'status': 'ok', 'new_likes_count': 101})
+
+   6. JavaScript Menerima Respons dan Mengupdate Halaman (Client-Side)
+   Kembali ke browser, Fetch API yang tadi dikirim kini menerima respons JSON dari Django. Kode JavaScript kemudian:  
+   -membaca data JSON dari respons.  
+   -Menggunakan data tersebut untuk memanipulasi DOM (Document Object Model) secara langsung (tanpe refresh).
+   Contoh: JavaScript mengambil 'new_likes_count': 101 dari respons dan memperbarui teks di dalam elemen <span id="like-count"> menjadi "101".
+3. Apa keuntungan menggunakan AJAX dibandingkan render biasa di Django?  
+   1. Mengurangi Beban Server dan Bandwidth
+   AJAX secara signifikan lebih efisien dalam hal penggunaan sumber daya.  
+   Tanpa AJAX (hanya Render Biasa), Server terus-menerus merender ulang template HTML yang besar dlalu mengirim melalui internet. proses Ini memakan lebih banyak resource CPU di server dan menghabiskan lebih banyak bandwidth.
+   Dengan AJAX, server cuku perlu mengirimkan beberapa baris data dalam format JSON. Ukuran data yang ditransfer lebih kecil, sehingga mengurangi load server dan menghemat kuota internet user.  
+   2. Memisahkan Logika (Separation of Concerns)  
+   AJAX mendorong arsitektur di mana front-end (tampilan) dan back-end (logika) lebih terpisah. Django bertindak sebagai API (Application Programming Interface) yang memberikan data. Sementara itu, JavaScript di clien side menampilkan data tersebut. Pemisahan ini membuat kode lebih mudah dikelola, diuji, dan didevelop secara paralel oleh programmer yang berbeda.  
+   3. User experience yang lebih bagus  
+   Interaksi di halaman web terasa lebih cepat, mulus, dan responsif, mirip seperti menggunakan aplikasi desktop.
+   Tanpa AJAX (Render Biasa): Setiap kali user mengklik tombol "like", berkomentar, atau memfilter produk, browser akan mengirim request ke Django. Django memprosesnya, merender ulang seluruh template HTML (termasuk header, footer, sidebar), dan mengirimkannya kembali. User akan melihat halaman berkedip (flash) saat me refresh.
+   Dengan AJAX: Ketika user mengklik tombol like, hanya request kecil untuk data yang relevan (misal, "increment like_var pada post ID 5") yang dikirim ke server. Server hanya merespons dengan data minimal (misalnya, {'like_var': 102}). JavaScript hanya mengupdate jumlah like di page postingan. Tidak ada flash ataupun refresh yang terjadi
+4. Bagaimana cara memastikan keamanan saat menggunakan AJAX untuk fitur Login dan Register di Django?  
+   1)Pada tutorial dan tugas ini, kita gunakan logika validasi dan login yang telah disediakan django, yaitu AuthenticarionForm dan UserCreationForm. Keduanya sudah dibuat dengan aman dan teruji. Kita cukup menggunakannya saja, tanpa perlu membuat dari awal.  
+2)Melakukan validasi di serverside, yaitu pada logika views.py  
+3)membatasi jumlah upaya login yang gagal dari satu alamat IP atau untuk satu username, bisa dengan menggunakan django-ratelimit  
+4)Mereturn message yang "aman". Jangan mengembalikan warning dengan {'error': 'Password salah untuk user pand@Kecil'}. Message ini mengimplikasikan bahwa ada user dengan username pand@Kecil. Lebih baik mereturn message {'error': 'Username atau password salah'}. Tidak ada informasi yang berarti untuk digunakan peretas.
+5. Bagaimana AJAX mempengaruhi pengalaman pengguna (User Experience) pada website?  
+   AJAX mengubah pengalaman pengguna (User Experience/UX) dengan membuat website terasa lebih cepat, responsif, dan interaktif, mirip seperti menggunakan aplikasi desktop atau mobile.
+Tanpa AJAX, setiap interaksi kecil (seperti mengklik "suka", memfilter produk, atau mengirim komentar) memaksa browser untuk reload seluruh page. Proses ini mmembuat experience yang lambat dan terputus-putus.
+
+   AJAX menghilangkan masalah ini dengan cara berikut:  
+   1)Membuat respon instan  
+   Saat "bagian" kecil dari data yang dikirim dan diterima dari server di latar belakang, aksi user mendapat respons yang terasa cepat
+   Sebelum AJAX: Mengklik "Tambah ke Keranjang" akan reload seluruh, bisa memakan waktu beberapa detik.
+   Dengan AJAX: Mengklik "Tambah ke Keranjang" hanya akan menampilkan ikon keranjang yang diperbarui atau notifikasi kecil dalam sepersekian detik. User bisa langsung melanjutkan aktivitasnya.  
+   2) Meningkatkan Efisiensi dan Penghematan Data  
+   Dengan hanya mentransfer data yang benar-benar diperlukan , AJAXmengurangi jumlah data yang harus diunduh oleh User. Konsep Ini membuat website lebih cepat diakses pada koneksi internet yang lebih lambat dan lebih hemat kuota bagi user mobile device.  
+   3)Interaksi Tanpa Gangguan   
+   AJAX memungkinkan pengguna untuk berinteraksi dengan halaman tanpa kehilangan konteks atau posisi mereka saat ini.
+   Sebelum AJAX: Ketika user sedang mengisi formulir panjang dan ada satu "kecerobohan" saat user menekan tombol "kirim". Seluruh page akan dimuat ulang, dan mungkin semua data yang sudah user isi hilang.
+   Dengan AJAX: Jika ada error pada formulir, message kesalahan akan muncul tepat di sebelah bidang yang salah tanpa reload halaman. User tetap berada di formulir dan dapat langsung memperbaikinya. Contoh lain adalah infinite scroll di media sosial, di mana konten baru ditambahkan ke bagian bawah halaman tanpa mengganggu posisi User saat ini.  
+   4)Feedback Real-Time  
+   AJAX memungkinkan website untuk memberikan feedback langsung kepada usr saat mereka melakukan sesuatu
+   Pengecekan Username: Saat mendaftar, sistem bisa langsung memberitahu "Username sudah dipakai" atau "Username tersedia" saat user selesai mengetik, bukan setelah user mengirim seluruh formulir.
+   Simpan Otomatis (Autosave): Misalnya di Google Docs, perubahan disimpan secara otomatis di background setiap beberapa detik. Usermerasa aman karena tahu pekerjaan mereka tidak akan hilang.
 
